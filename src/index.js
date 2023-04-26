@@ -43,18 +43,37 @@ function templateCountrieslist(countries) {
 };
 
 function templateCountryInfo(country) {
-  return country.map(
-    ({ name, flags ,capital, population,  languages }) =>
-      ` <div class="wrapper">
-          <img src="${flags.png}" alt="${name.official}" width="150" height="100">
-          <h1 class="name-country">${name.common}</h1>
-        </div>
-        <ul class="info-list">
-          <li class="info-item">Capital: ${capital}</li>
-          <li class="info-item">Population: ${population}</li>
-          <li class="info-item">Languages: ${Object.values(languages)}</li>
-        </ul>`
-  );
+  const countries = country
+  .map(
+    ({ 
+      name, 
+      flags,
+      capital, 
+      population, 
+      languages, 
+    }) => {
+      languages = Object.values(languages).join(', ');
+      let formattedPopulation = '';
+      if (population < 1000000) {
+        formattedPopulation = population.toLocaleString('en');
+      } else {
+        formattedPopulation =
+          (population / 1000000).toLocaleString('en', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 3,
+          }) + ' million.';
+      }
+      return `
+          <img src="${flags.svg}" alt="${name}" width="320" height="auto">
+          <p> ${name.official}</p>
+          <p>Capital: <span> ${capital}</span></p>
+          <p>Population: <span> ${formattedPopulation} </span></p>
+          <p>Languages: <span> ${languages}</span></p>`
+    }
+  )
+  .join('');
+countryInfo.innerHTML = countries;
+return countries;
 }
 
 function clearFields(){
